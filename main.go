@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
 	"sync"
 )
 
@@ -149,6 +152,8 @@ func main() {
 		Weapon:   &Weapon{"Когти", 20, 50},
 	}
 
+	reader := bufio.NewReader(os.Stdin)
+
 	for hero.IsAlive() && monster.IsAlive() {
 		fmt.Println("\n1. Атаковать")
 		fmt.Println("2. Использовать предмет")
@@ -156,6 +161,7 @@ func main() {
 
 		var choice int
 		fmt.Scan(&choice)
+		reader.ReadString('\n')
 
 		switch choice {
 		case 1:
@@ -163,8 +169,9 @@ func main() {
 			monster.TakeDamage(damage)
 		case 2:
 			fmt.Print("Введи название предмета: ")
-			var itemName string
-			fmt.Scan(&itemName)
+			itemName, _ := reader.ReadString('\n')
+			itemName = strings.TrimSpace(itemName)
+
 			if err := hero.UseItem(itemName); err != nil {
 				fmt.Println("Ошибка:", err)
 			} else {
@@ -176,6 +183,11 @@ func main() {
 			damage := monster.Attack(hero)
 			hero.TakeDamage(damage)
 		}
+	}
 
+	if hero.IsAlive() {
+		fmt.Println("🎉Герой победил!")
+	} else {
+		fmt.Println("💀Герой пал в бою...")
 	}
 }
