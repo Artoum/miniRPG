@@ -62,7 +62,7 @@ func (c *Character) IsAlive() bool {
 		fmt.Printf("Здоровье %v: %d\n", c.Name, c.HP)
 		return true
 	} else {
-		fmt.Println("Персонаж убит")
+		fmt.Printf("Персонаж %v убит \n", c.Name)
 		return false
 	}
 }
@@ -91,9 +91,8 @@ func (c *Character) TakeDamage(damage int) {
 	defer c.mu.Unlock()
 
 	// расчет получнения урона
-	// формула получения блокировки урона (урон * защиту)
-	blockDamage := float64(damage) * (float64(c.Defense) * defaultConfig.DefenseReduction)
-
+	// формула получения блокировки урона
+	blockDamage := float64(damage) * (float64(c.Defense) * 0.01) // 0.01 = 1% за единицу защиты
 	// проверка если заблокированный превышает обычный урон
 
 	if blockDamage > float64(damage) {
@@ -178,9 +177,5 @@ func main() {
 			hero.TakeDamage(damage)
 		}
 
-		if !hero.IsAlive() {
-			fmt.Println("Герой пал в бою...")
-			break
-		}
 	}
 }
